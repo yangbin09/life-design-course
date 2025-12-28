@@ -6,17 +6,14 @@
 
 ### 1. 构建与发布 (开发端)
 
-如果你修改了代码，需要重新构建镜像并发布到 Docker Hub：
+如果你修改了代码，需要重新构建镜像并发布到 Docker Hub。
+**重要**：为了兼容 Linux 服务器 (AMD64 架构)，构建时必须指定 `--platform linux/amd64`。
 
 ```bash
-# 1. 构建镜像
-docker build -t life-design-course .
+# 1. 构建镜像 (跨平台构建)
+docker build --platform linux/amd64 -t bainianshushu/life-design-course:latest .
 
-# 2. 打标签 (Tag)
-# 将本地镜像标记为 Docker Hub 仓库镜像
-docker tag life-design-course bainianshushu/life-design-course:latest
-
-# 3. 推送到仓库
+# 2. 推送到仓库
 docker push bainianshushu/life-design-course:latest
 ```
 
