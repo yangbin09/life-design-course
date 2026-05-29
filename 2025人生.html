@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2025 个人年度复盘 | 重塑生命决策</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;500;700;900&family=Ma+Shan+Zheng&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-paper: #F9F5F0;
+            --text-primary: #4A3B32;
+            --text-secondary: #8C7B70;
+            --accent-warm: #D97706; /* Amber 600 */
+            --accent-soft: #FDE68A; /* Amber 200 */
+            --accent-alert: #B91C1C; /* Red 700 - for stop loss */
+            --card-bg: #FFFFFF;
+        }
+
+        body {
+            background-color: var(--bg-paper);
+            color: var(--text-primary);
+            font-family: 'Noto Serif SC', serif;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        /* 噪点纹理 - 增加纸质感 */
+        .noise-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 50;
+            opacity: 0.04;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        }
+
+        /* 滚动进度条 */
+        .life-progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #F59E0B, #B45309);
+            z-index: 100;
+            width: 0%;
+            transition: width 0.1s ease-out;
+        }
+
+        /* 动画类 */
+        .fade-in-up {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+
+        .fade-in-up.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .reveal-text span {
+            display: inline-block;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s ease;
+        }
+        
+        .reveal-text.visible span {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* 自定义高亮 */
+        .highlight {
+            position: relative;
+            display: inline-block;
+            z-index: 1;
+        }
+        
+        .highlight::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 30%;
+            background-color: var(--accent-soft);
+            z-index: -1;
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.6s ease 0.2s;
+        }
+
+        .visible .highlight::after {
+            transform: scaleX(1);
+        }
+
+        /* 卡片悬停效果 */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 4px 20px rgba(74, 59, 50, 0.05);
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+        }
+
+        .glass-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(217, 119, 6, 0.15);
+        }
+
+        /* 手写体标题 */
+        .handwritten {
+            font-family: 'Ma Shan Zheng', cursive;
+        }
+
+        /* 呼吸光晕 */
+        .glow-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            z-index: -1;
+            opacity: 0.6;
+            animation: breathe 8s infinite alternate;
+        }
+
+        @keyframes breathe {
+            0% { transform: scale(1); opacity: 0.4; }
+            100% { transform: scale(1.2); opacity: 0.7; }
+        }
+        
+        /* 熔断机制警示条纹 */
+        .hazard-stripe {
+            background: repeating-linear-gradient(
+                45deg,
+                #fef2f2,
+                #fef2f2 10px,
+                #fee2e2 10px,
+                #fee2e2 20px
+            );
+        }
+
+    </style>
+</head>
+<body class="antialiased selection:bg-orange-200 selection:text-orange-900">
+
+    <div class="noise-overlay"></div>
+    <div class="life-progress" id="progressBar"></div>
+
+    <!-- Hero Section -->
+    <section class="min-h-screen flex flex-col justify-center items-center relative px-6 py-20 overflow-hidden">
+        <!-- 暖色背景光晕 -->
+        <div class="glow-orb bg-orange-300 w-96 h-96 -top-20 -left-20"></div>
+        <div class="glow-orb bg-yellow-200 w-[30rem] h-[30rem] bottom-0 right-0 delay-1000"></div>
+
+        <div class="max-w-4xl w-full text-center z-10">
+            <p class="text-orange-700 tracking-[0.3em] text-sm md:text-base font-bold uppercase mb-4 fade-in-up" style="transition-delay: 0.1s">Personal Annual Review</p>
+            <h1 class="text-[5rem] md:text-[9rem] leading-none font-black text-transparent bg-clip-text bg-gradient-to-br from-orange-800 to-yellow-700 mb-6 handwritten fade-in-up" style="transition-delay: 0.3s">
+                2025
+            </h1>
+            <h2 class="text-2xl md:text-4xl text-stone-700 font-light mb-12 fade-in-up" style="transition-delay: 0.5s">
+                从“用人生换结果” <br class="md:hidden" /> → 到“开始为人生本身做决策”
+            </h2>
+            
+            <div class="flex flex-wrap justify-center gap-4 text-sm md:text-base text-stone-500 fade-in-up" style="transition-delay: 0.7s">
+                <span class="px-4 py-2 border border-stone-300 rounded-full"># 止损</span>
+                <span class="px-4 py-2 border border-stone-300 rounded-full"># 去内耗</span>
+                <span class="px-4 py-2 border border-stone-300 rounded-full"># 重估时间</span>
+                <span class="px-4 py-2 border border-stone-300 rounded-full"># 重写努力</span>
+            </div>
+
+            <div class="mt-20 fade-in-up animate-bounce text-stone-400" style="transition-delay: 1s">
+                <i data-lucide="chevron-down" class="w-8 h-8 mx-auto"></i>
+            </div>
+        </div>
+    </section>
+
+    <!-- Summary Intro -->
+    <section class="py-24 px-6 md:px-12 max-w-5xl mx-auto relative">
+        <div class="text-center space-y-8 fade-in-up">
+            <i data-lucide="quote" class="w-10 h-10 text-orange-300 mx-auto opacity-50"></i>
+            <p class="text-2xl md:text-3xl leading-relaxed text-stone-700 font-light">
+                这一年，你不是在某个领域爆发式成功，<br>
+                而是在三个非常关键的<span class="highlight font-medium text-stone-900">底层结构</span>上发生了迁移。
+            </p>
+        </div>
+        
+        <div class="grid md:grid-cols-3 gap-8 mt-16">
+            <div class="glass-card p-8 rounded-2xl text-center fade-in-up" style="transition-delay: 0.1s">
+                <div class="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4 text-orange-700">
+                    <i data-lucide="scale"></i>
+                </div>
+                <h3 class="text-lg font-bold mb-2">判断方式</h3>
+                <p class="text-stone-500 text-sm">对“努力是否值得”的<br>判断方式变了</p>
+            </div>
+            <div class="glass-card p-8 rounded-2xl text-center fade-in-up" style="transition-delay: 0.2s">
+                <div class="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4 text-orange-700">
+                    <i data-lucide="stop-circle"></i>
+                </div>
+                <h3 class="text-lg font-bold mb-2">停止时机</h3>
+                <p class="text-stone-500 text-sm">对“什么时候该停”的<br>态度变了</p>
+            </div>
+            <div class="glass-card p-8 rounded-2xl text-center fade-in-up" style="transition-delay: 0.3s">
+                <div class="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4 text-orange-700">
+                    <i data-lucide="heart-handshake"></i>
+                </div>
+                <h3 class="text-lg font-bold mb-2">忍受阈值</h3>
+                <p class="text-stone-500 text-sm">对“人生是不是可以先忍再说”的假设<br>被彻底击穿了</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Module A: ROI -->
+    <section class="py-24 px-6 bg-orange-50/50 border-t border-b border-orange-100/50">
+        <div class="max-w-6xl mx-auto">
+            <div class="mb-12 fade-in-up">
+                <h2 class="text-xs font-bold tracking-widest text-orange-600 uppercase mb-2">Module A</h2>
+                <h3 class="text-4xl font-serif text-stone-800 mb-4">ROI 审计：生命能量 vs 道德努力</h3>
+                <div class="w-20 h-1 bg-orange-400"></div>
+            </div>
+
+            <div class="grid lg:grid-cols-2 gap-12">
+                <!-- High ROI -->
+                <div class="fade-in-up">
+                    <div class="glass-card rounded-2xl overflow-hidden h-full border-l-4 border-l-green-600">
+                        <div class="p-8">
+                            <div class="flex items-center gap-3 mb-6">
+                                <span class="bg-green-100 text-green-800 text-xs font-bold px-2 py-1 rounded">HIGHEST ROI</span>
+                                <h4 class="text-xl font-bold">读书交流 / 局外人活动</h4>
+                            </div>
+                            
+                            <ul class="space-y-4 text-stone-600 mb-8">
+                                <li class="flex gap-3">
+                                    <i data-lucide="check" class="w-5 h-5 text-green-600 flex-shrink-0"></i>
+                                    <span>投入：周末时间 → 产出：情绪稳定、认知提升</span>
+                                </li>
+                                <li class="flex gap-3">
+                                    <i data-lucide="check" class="w-5 h-5 text-green-600 flex-shrink-0"></i>
+                                    <span>本质：决策操作系统升级</span>
+                                </li>
+                            </ul>
+
+                            <div class="bg-green-50 p-5 rounded-lg border border-green-100">
+                                <p class="text-green-900 font-medium italic">“沉没成本不是成本”</p>
+                                <p class="text-sm text-green-700 mt-2">真正的收益不是多赚了什么，而是：少浪费了多少人生能量。</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Low ROI -->
+                <div class="fade-in-up" style="transition-delay: 0.2s">
+                    <div class="glass-card rounded-2xl overflow-hidden h-full border-l-4 border-l-red-600">
+                        <div class="p-8">
+                            <div class="flex items-center gap-3 mb-6">
+                                <span class="bg-red-100 text-red-800 text-xs font-bold px-2 py-1 rounded">LOWEST ROI</span>
+                                <h4 class="text-xl font-bold">反复打磨公开课件</h4>
+                            </div>
+                            
+                            <ul class="space-y-4 text-stone-600 mb-8">
+                                <li class="flex gap-3">
+                                    <i data-lucide="x" class="w-5 h-5 text-red-600 flex-shrink-0"></i>
+                                    <span>表层：追求完美 → 深层：恐惧评价</span>
+                                </li>
+                                <li class="flex gap-3">
+                                    <i data-lucide="x" class="w-5 h-5 text-red-600 flex-shrink-0"></i>
+                                    <span>问题：没有“60分交付”的下限，没有时间盒</span>
+                                </li>
+                            </ul>
+
+                            <div class="bg-red-50 p-5 rounded-lg border border-red-100">
+                                <p class="text-red-900 font-medium italic">“这不是勤奋，是焦虑管理失败”</p>
+                                <p class="text-sm text-red-700 mt-2">你用“过度准备”来对抗不确定性，但这恰恰是低效的根源。</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Module B: Stop Loss -->
+    <section class="py-24 px-6 max-w-4xl mx-auto">
+        <div class="text-center mb-16 fade-in-up">
+            <h2 class="text-xs font-bold tracking-widest text-orange-600 uppercase mb-2">Module B</h2>
+            <h3 class="text-4xl font-serif text-stone-800">那个做了 3 年的项目</h3>
+        </div>
+
+        <div class="relative pl-8 md:pl-16 border-l-2 border-stone-200 space-y-16">
+            <!-- Point 1 -->
+            <div class="relative fade-in-up">
+                <div class="absolute -left-[41px] md:-left-[73px] top-0 bg-stone-100 p-2 rounded-full border-2 border-stone-300">
+                    <i data-lucide="history" class="w-6 h-6 text-stone-500"></i>
+                </div>
+                <h4 class="text-xl font-bold mb-2">困局</h4>
+                <p class="text-stone-600 leading-relaxed">
+                    理性告诉你该停了，但你卡住了。<br>
+                    “如果现在停下来，这三年就真的什么都没了。”
+                </p>
+            </div>
+
+            <!-- Point 2 -->
+            <div class="relative fade-in-up">
+                <div class="absolute -left-[41px] md:-left-[73px] top-0 bg-stone-100 p-2 rounded-full border-2 border-stone-300">
+                    <i data-lucide="book-open" class="w-6 h-6 text-stone-500"></i>
+                </div>
+                <h4 class="text-xl font-bold mb-2">洞察</h4>
+                <p class="text-stone-600 leading-relaxed">
+                    这不仅仅是商业判断。<br>
+                    你在害怕：<span class="highlight font-medium text-stone-800">这三年在“人生叙事”里，没有一个交代。</span><br>
+                    “马上做完了”成了最强的心理粘着剂。
+                </p>
+            </div>
+
+            <!-- Point 3 -->
+            <div class="relative fade-in-up">
+                <div class="absolute -left-[41px] md:-left-[73px] top-0 bg-orange-100 p-2 rounded-full border-2 border-orange-400">
+                    <i data-lucide="scissors" class="w-6 h-6 text-orange-600"></i>
+                </div>
+                <h4 class="text-2xl font-bold mb-2 text-orange-800">止损</h4>
+                <div class="glass-card p-6 rounded-xl border-l-4 border-orange-500">
+                    <p class="text-lg text-stone-800 font-medium">
+                        你最终选择了切断。
+                    </p>
+                    <p class="mt-2 text-stone-600">
+                        这是你今年最大的进步。你接受了那段努力在叙事上可以是“空的”，你不再为了“圆一个故事”而浪费更多现在。
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Module C: Time -->
+    <section class="py-24 px-6 bg-stone-900 text-stone-100 relative overflow-hidden">
+        <!-- 背景装饰 -->
+        <div class="absolute top-0 right-0 w-full h-full opacity-10 pointer-events-none">
+            <svg viewBox="0 0 100 100" preserveAspectRatio="none" class="w-full h-full">
+                <path d="M0 100 L100 0 L100 100 Z" fill="#333"></path>
+            </svg>
+        </div>
+
+        <div class="max-w-4xl mx-auto relative z-10">
+            <div class="text-center mb-16 fade-in-up">
+                <h2 class="text-xs font-bold tracking-widest text-stone-400 uppercase mb-2">Module C</h2>
+                <h3 class="text-4xl font-serif text-white mb-6">时间观的重置</h3>
+                <div class="w-16 h-1 bg-white mx-auto opacity-30"></div>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div class="space-y-6 fade-in-up">
+                    <p class="text-xl text-stone-300 font-light italic">
+                        "在葬礼现场，你愣住了。"
+                    </p>
+                    <p class="text-stone-400 leading-relaxed">
+                        以前的默认假设：“人生还很长，主要是拼事业。”<br>
+                        当下的真实念头：“很多事其实根本没有以后。”
+                    </p>
+                </div>
+
+                <div class="bg-stone-800/50 p-8 rounded-2xl border border-stone-700 fade-in-up backdrop-blur-sm">
+                    <h4 class="text-lg font-bold text-orange-200 mb-4">策略变更</h4>
+                    <ul class="space-y-4">
+                        <li class="flex items-center gap-3">
+                            <i data-lucide="arrow-right" class="text-stone-500"></i>
+                            <span>少加一点班</span>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <i data-lucide="arrow-right" class="text-stone-500"></i>
+                            <span>多陪一点家人</span>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <i data-lucide="arrow-right" class="text-stone-500"></i>
+                            <span>更认真对待身体</span>
+                        </li>
+                    </ul>
+                    <div class="mt-6 pt-6 border-t border-stone-700">
+                        <p class="text-xl font-serif text-white">
+                            “很多东西值得现在就要。”
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Thread Summary -->
+    <section class="py-24 px-6 max-w-5xl mx-auto">
+        <h2 class="text-3xl font-bold text-center mb-16 fade-in-up">2025 年的真实主线</h2>
+        
+        <div class="space-y-4">
+            <!-- Line 1 -->
+            <div class="group cursor-default fade-in-up">
+                <div class="flex flex-col md:flex-row items-center justify-between p-6 rounded-2xl hover:bg-white hover:shadow-lg transition-all duration-300 border border-transparent hover:border-orange-100">
+                    <div class="text-center md:text-left mb-4 md:mb-0">
+                        <span class="text-stone-400 text-sm block mb-1">From</span>
+                        <span class="text-xl text-stone-500 line-through decoration-stone-300 decoration-2">内耗型坚持</span>
+                    </div>
+                    <div class="text-orange-400 mx-4 rotate-90 md:rotate-0">
+                        <i data-lucide="arrow-right" class="w-6 h-6"></i>
+                    </div>
+                    <div class="text-center md:text-right mt-4 md:mt-0">
+                        <span class="text-stone-400 text-sm block mb-1">To</span>
+                        <span class="text-2xl font-bold text-orange-800">止损型理性</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Line 2 -->
+            <div class="group cursor-default fade-in-up" style="transition-delay: 0.1s">
+                <div class="flex flex-col md:flex-row items-center justify-between p-6 rounded-2xl hover:bg-white hover:shadow-lg transition-all duration-300 border border-transparent hover:border-orange-100">
+                    <div class="text-center md:text-left mb-4 md:mb-0">
+                        <span class="text-stone-400 text-sm block mb-1">From</span>
+                        <span class="text-xl text-stone-500 line-through decoration-stone-300 decoration-2">证明型努力</span>
+                    </div>
+                    <div class="text-orange-400 mx-4 rotate-90 md:rotate-0">
+                        <i data-lucide="arrow-right" class="w-6 h-6"></i>
+                    </div>
+                    <div class="text-center md:text-right mt-4 md:mt-0">
+                        <span class="text-stone-400 text-sm block mb-1">To</span>
+                        <span class="text-2xl font-bold text-orange-800">边界型交付</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Line 3 -->
+            <div class="group cursor-default fade-in-up" style="transition-delay: 0.2s">
+                <div class="flex flex-col md:flex-row items-center justify-between p-6 rounded-2xl hover:bg-white hover:shadow-lg transition-all duration-300 border border-transparent hover:border-orange-100">
+                    <div class="text-center md:text-left mb-4 md:mb-0">
+                        <span class="text-stone-400 text-sm block mb-1">From</span>
+                        <span class="text-xl text-stone-500 line-through decoration-stone-300 decoration-2">未来导向人生</span>
+                    </div>
+                    <div class="text-orange-400 mx-4 rotate-90 md:rotate-0">
+                        <i data-lucide="arrow-right" class="w-6 h-6"></i>
+                    </div>
+                    <div class="text-center md:text-right mt-4 md:mt-0">
+                        <span class="text-stone-400 text-sm block mb-1">To</span>
+                        <span class="text-2xl font-bold text-orange-800">当下纳入权重</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- NEW SECTION: Deep System Analysis -->
+    <section class="py-24 px-6 bg-[#F2EDE6] border-t border-b border-stone-200">
+        <div class="max-w-6xl mx-auto">
+            <div class="mb-16 fade-in-up text-center">
+                <h2 class="text-xs font-bold tracking-widest text-stone-500 uppercase mb-2">System Architecture</h2>
+                <h3 class="text-3xl md:text-4xl font-serif text-stone-800 mb-4">2025 系统拆解：行为心理学视角</h3>
+                <p class="text-stone-600 max-w-2xl mx-auto">
+                    剥离运气与情绪，用第一性原理、归因审计与SWOT，还原你真正发生的“决策升级”。
+                </p>
+            </div>
+
+            <!-- 1. First Principles & Formula -->
+            <div class="grid md:grid-cols-2 gap-12 mb-20 items-stretch">
+                <!-- Formula Card -->
+                <div class="fade-in-up flex flex-col">
+                    <h4 class="text-lg font-bold text-stone-800 mb-6 flex items-center gap-2">
+                        <i data-lucide="function-square" class="text-orange-600"></i> 第一性原理：成功概率公式
+                    </h4>
+                    <div class="glass-card p-8 rounded-2xl flex-grow flex flex-col justify-center border-l-4 border-orange-500">
+                        <div class="text-center mb-8">
+                            <p class="text-sm text-stone-500 uppercase tracking-wide mb-2">Probability of Success</p>
+                            <p class="text-3xl md:text-4xl font-serif italic text-stone-800">
+                                P &approx; ( <span class="text-orange-600">D</span> &times; <span class="text-orange-600">B</span> ) + <span class="text-orange-600">L</span>
+                            </p>
+                        </div>
+                        <div class="space-y-4 text-sm text-stone-600">
+                            <div class="flex gap-3">
+                                <span class="font-bold text-orange-700 w-6">D</span>
+                                <div><strong class="text-stone-800">Decision Clarity (决策清晰度)</strong><br>在正确战场投入，而非在情绪战场消耗。</div>
+                            </div>
+                            <div class="flex gap-3">
+                                <span class="font-bold text-orange-700 w-6">B</span>
+                                <div><strong class="text-stone-800">Boundary Closure (边界收敛力)</strong><br>时间盒 + 60分交付线。没有收敛的系统，天然走向无限打磨。</div>
+                            </div>
+                            <div class="flex gap-3">
+                                <span class="font-bold text-orange-700 w-6">L</span>
+                                <div><strong class="text-stone-800">Leverage (认知杠杆)</strong><br>如“沉没成本不是成本”，改变判断函数的质量。</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- MFU Card -->
+                <div class="fade-in-up flex flex-col" style="transition-delay: 0.1s">
+                    <h4 class="text-lg font-bold text-stone-800 mb-6 flex items-center gap-2">
+                        <i data-lucide="component" class="text-orange-600"></i> 最小成功单元 (MFU)
+                    </h4>
+                    <div class="glass-card p-8 rounded-2xl flex-grow">
+                        <p class="text-stone-600 mb-6">
+                            你的核心能力不是“执行力”，而是：<br>
+                            <span class="font-medium text-stone-900 bg-orange-100 px-1">在高情绪压力下，把选择从“自我证明”切回“结构最优”。</span>
+                        </p>
+                        <div class="space-y-4">
+                            <div class="flex items-center gap-4">
+                                <div class="w-8 h-8 rounded-full bg-stone-100 flex items-center justify-center text-stone-600 font-bold">1</div>
+                                <p><span class="font-bold text-stone-800">命名困局</span>：识别“沉没成本”或“评价焦虑”</p>
+                            </div>
+                            <div class="flex items-center gap-4">
+                                <div class="w-8 h-8 rounded-full bg-stone-100 flex items-center justify-center text-stone-600 font-bold">2</div>
+                                <p><span class="font-bold text-stone-800">设定边界</span>：强行划定止损线</p>
+                            </div>
+                            <div class="flex items-center gap-4">
+                                <div class="w-8 h-8 rounded-full bg-stone-100 flex items-center justify-center text-stone-600 font-bold">3</div>
+                                <p><span class="font-bold text-stone-800">做出切割</span>：允许叙事不完美，但结构必须健康</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. Attribution Audit -->
+            <div class="mb-20 fade-in-up">
+                <h4 class="text-lg font-bold text-stone-800 mb-6 flex items-center gap-2">
+                    <i data-lucide="pie-chart" class="text-orange-600"></i> 增长归因审计
+                </h4>
+                <div class="glass-card p-8 rounded-2xl">
+                    <div class="flex flex-col md:flex-row gap-8 items-center">
+                        <div class="w-full md:w-1/3 text-center md:text-left">
+                            <p class="text-sm text-stone-500 mb-2">Attribution Analysis</p>
+                            <p class="text-2xl font-bold text-stone-800">做对了什么 vs 环境给了什么</p>
+                        </div>
+                        <div class="w-full md:w-2/3 space-y-6">
+                            <!-- Internal -->
+                            <div>
+                                <div class="flex justify-between mb-2 text-sm font-medium">
+                                    <span class="text-stone-800">你的实力 (认知升级 + 止损能力)</span>
+                                    <span class="text-stone-800">65%</span>
+                                </div>
+                                <div class="w-full bg-stone-200 rounded-full h-4 overflow-hidden">
+                                    <div class="bg-stone-600 h-4 rounded-full" style="width: 65%"></div>
+                                </div>
+                                <p class="text-xs text-stone-500 mt-2">减少无效投入、重排优先级、寻找高质量认知场</p>
+                            </div>
+                            <!-- External -->
+                            <div>
+                                <div class="flex justify-between mb-2 text-sm font-medium">
+                                    <span class="text-orange-600">外部红利 (AI热度 + 市场供给)</span>
+                                    <span class="text-orange-600">35%</span>
+                                </div>
+                                <div class="w-full bg-orange-100 rounded-full h-4 overflow-hidden">
+                                    <div class="bg-orange-500 h-4 rounded-full" style="width: 35%"></div>
+                                </div>
+                                <p class="text-xs text-stone-500 mt-2">警惕：外部红利消失时，“没有边界”的工作方式将变得致命。</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. Circuit Breakers (Meltdown Mechanism) -->
+            <div class="mb-20 fade-in-up">
+                <h4 class="text-lg font-bold text-stone-800 mb-6 flex items-center gap-2">
+                    <i data-lucide="siren" class="text-red-700"></i> 2026 避坑铁律：决策熔断机制
+                </h4>
+                <div class="grid md:grid-cols-3 gap-6">
+                    <!-- Breaker A -->
+                    <div class="bg-red-50/50 border border-red-200 p-6 rounded-xl hazard-stripe">
+                        <div class="bg-white/90 p-5 rounded-lg h-full shadow-sm">
+                            <h5 class="font-bold text-red-900 mb-3 flex items-center gap-2">
+                                <i data-lucide="alert-triangle" class="w-4 h-4"></i>
+                                防“无限打磨”
+                            </h5>
+                            <p class="text-xs font-bold text-red-700 uppercase mb-2">触发信号</p>
+                            <ul class="text-xs text-stone-600 list-disc list-inside mb-4 space-y-1">
+                                <li>连续3次仅修改表达形式</li>
+                                <li>无法定义“60分标准”</li>
+                            </ul>
+                            <div class="border-t border-red-100 pt-3">
+                                <p class="text-xs font-bold text-red-700 uppercase mb-1">红线动作</p>
+                                <p class="text-sm font-medium text-stone-800">48小时内强制交付V1，只允许基于真实反馈迭代。</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Breaker B -->
+                    <div class="bg-red-50/50 border border-red-200 p-6 rounded-xl hazard-stripe">
+                        <div class="bg-white/90 p-5 rounded-lg h-full shadow-sm">
+                            <h5 class="font-bold text-red-900 mb-3 flex items-center gap-2">
+                                <i data-lucide="alert-triangle" class="w-4 h-4"></i>
+                                防“沉没成本”
+                            </h5>
+                            <p class="text-xs font-bold text-red-700 uppercase mb-2">触发信号</p>
+                            <ul class="text-xs text-stone-600 list-disc list-inside mb-4 space-y-1">
+                                <li>说出“都做到这一步了”</li>
+                                <li>连续8周无领先指标改善</li>
+                            </ul>
+                            <div class="border-t border-red-100 pt-3">
+                                <p class="text-xs font-bold text-red-700 uppercase mb-1">红线动作</p>
+                                <p class="text-sm font-medium text-stone-800">90天止损线。停止项目 ≠ 否定过去。</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Breaker C -->
+                    <div class="bg-red-50/50 border border-red-200 p-6 rounded-xl hazard-stripe">
+                        <div class="bg-white/90 p-5 rounded-lg h-full shadow-sm">
+                            <h5 class="font-bold text-red-900 mb-3 flex items-center gap-2">
+                                <i data-lucide="alert-triangle" class="w-4 h-4"></i>
+                                防“时间无限幻觉”
+                            </h5>
+                            <p class="text-xs font-bold text-red-700 uppercase mb-2">触发信号</p>
+                            <ul class="text-xs text-stone-600 list-disc list-inside mb-4 space-y-1">
+                                <li>连续2周运动/陪伴为0</li>
+                                <li>频繁说“等这段过去就好了”</li>
+                            </ul>
+                            <div class="border-t border-red-100 pt-3">
+                                <p class="text-xs font-bold text-red-700 uppercase mb-1">红线动作</p>
+                                <p class="text-sm font-medium text-stone-800">强制恢复底座预算（每周3个不可取消时间块）。</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SWOT & Iron Rule -->
+            <div class="grid lg:grid-cols-3 gap-8 items-center fade-in-up">
+                <div class="lg:col-span-2 glass-card p-8 rounded-2xl">
+                    <h4 class="text-lg font-bold text-stone-800 mb-4">2026 Strategic Positioning (SWOT)</h4>
+                    <div class="grid sm:grid-cols-2 gap-4 text-sm">
+                        <div class="p-4 bg-stone-50 rounded-lg">
+                            <span class="text-stone-400 text-xs font-bold uppercase">Strengths</span>
+                            <p class="font-medium text-stone-800 mt-1">高情绪压力下的止损能力 + 时间观重置 (稀缺资产)</p>
+                        </div>
+                        <div class="p-4 bg-stone-50 rounded-lg">
+                            <span class="text-stone-400 text-xs font-bold uppercase">Weaknesses</span>
+                            <p class="font-medium text-stone-800 mt-1">公开输出时易被评价风险劫持，导致系统不收敛</p>
+                        </div>
+                        <div class="p-4 bg-stone-50 rounded-lg">
+                            <span class="text-stone-400 text-xs font-bold uppercase">Opportunities</span>
+                            <p class="font-medium text-stone-800 mt-1">认知与表达复利赛道，外部需求窗口期</p>
+                        </div>
+                        <div class="p-4 bg-stone-50 rounded-lg">
+                            <span class="text-stone-400 text-xs font-bold uppercase">Threats</span>
+                            <p class="font-medium text-stone-800 mt-1">若热度下降仍无限打磨，将陷入“高努力低产出”死循环</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-1 h-full">
+                    <div class="bg-stone-800 text-stone-200 p-8 rounded-2xl h-full flex flex-col justify-center text-center relative overflow-hidden">
+                        <div class="absolute inset-0 bg-stone-900 opacity-50 z-0"></div>
+                        <div class="relative z-10">
+                            <i data-lucide="anchor" class="w-8 h-8 mx-auto mb-4 text-orange-400"></i>
+                            <h4 class="text-xs font-bold uppercase tracking-widest text-stone-400 mb-4">2026 Iron Rule</h4>
+                            <p class="text-lg font-serif italic text-white leading-relaxed">
+                                “凡是不能收敛的系统，<br>最终一定吞噬你。”
+                            </p>
+                            <p class="text-xs text-stone-500 mt-4">把时间盒、60分线、止损指标<br>当成安全带，而非束缚。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Final Mirror -->
+    <section class="py-32 px-6 bg-gradient-to-b from-orange-50 to-orange-100/50 text-center">
+        <div class="max-w-3xl mx-auto fade-in-up">
+            <h2 class="text-3xl md:text-4xl font-serif text-stone-800 mb-8">
+                “这个目标，<br>值得我用多少生命时间去换？”
+            </h2>
+            
+            <div class="bg-white p-8 md:p-12 rounded-3xl shadow-xl mt-12 relative overflow-hidden">
+                <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-orange-400 to-red-400"></div>
+                
+                <h3 class="text-sm font-bold text-stone-400 uppercase tracking-widest mb-6">2026 前瞻提醒</h3>
+                
+                <p class="text-lg md:text-xl text-stone-700 leading-relaxed mb-8">
+                    你已经看清了沉没成本，也看清了完美主义。<br>
+                    接下来真正决定你 2026 质量的问题是：
+                </p>
+
+                <div class="py-6 px-4 bg-orange-50 rounded-xl border border-orange-100 mb-8">
+                    <p class="text-xl md:text-2xl font-bold text-orange-900">
+                        你会不会为“值得现在就要的人生”，<br>
+                        设计一套全新的努力方式？
+                    </p>
+                </div>
+
+                <p class="text-stone-500 text-sm">
+                    不是不努力，而是不再用“牺牲自己”作为默认方式。
+                </p>
+                
+                <button onclick="commitToNewWay()" id="commitBtn" class="mt-10 px-8 py-4 bg-stone-800 text-white rounded-full hover:bg-stone-700 transition-all transform hover:scale-105 shadow-lg flex items-center gap-2 mx-auto">
+                    <span>开启 2026</span>
+                    <i data-lucide="sun" class="w-5 h-5"></i>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <footer class="py-12 text-center text-stone-400 text-sm">
+        <p>© 2025 Personal Review</p>
+    </footer>
+
+    <script>
+        // 初始化图标
+        lucide.createIcons();
+
+        // 滚动进度条
+        window.addEventListener('scroll', () => {
+            const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+            const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (scrollTop / scrollHeight) * 100;
+            document.getElementById('progressBar').style.width = scrolled + "%";
+        });
+
+        // 元素显现动画 Observer
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.15
+        };
+
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    // 仅触发一次，如果希望反复触发可去掉下面这行
+                    // observer.unobserve(entry.target); 
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.fade-in-up').forEach(el => {
+            observer.observe(el);
+        });
+
+        // 特效按钮逻辑
+        function commitToNewWay() {
+            const btn = document.getElementById('commitBtn');
+            btn.innerHTML = `<span>已确认</span> <i data-lucide="check"></i>`;
+            btn.classList.add('bg-orange-600');
+            
+            // 简单的粒子特效模拟
+            const count = 50;
+            const origin = btn.getBoundingClientRect();
+            const centerX = origin.left + origin.width / 2;
+            const centerY = origin.top + origin.height / 2;
+
+            for (let i = 0; i < count; i++) {
+                createParticle(centerX, centerY);
+            }
+            
+            lucide.createIcons();
+            
+            // 平滑滚动回顶部
+            setTimeout(() => {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }, 1500);
+        }
+
+        function createParticle(x, y) {
+            const particle = document.createElement('div');
+            document.body.appendChild(particle);
+            
+            const size = Math.random() * 8 + 4;
+            const color = ['#F59E0B', '#D97706', '#FDE68A', '#B45309'][Math.floor(Math.random() * 4)];
+            
+            particle.style.width = `${size}px`;
+            particle.style.height = `${size}px`;
+            particle.style.background = color;
+            particle.style.position = 'fixed';
+            particle.style.left = `${x}px`;
+            particle.style.top = `${y}px`;
+            particle.style.borderRadius = '50%';
+            particle.style.pointerEvents = 'none';
+            particle.style.zIndex = '9999';
+            
+            const destX = (Math.random() - 0.5) * 400;
+            const destY = (Math.random() - 0.5) * 400 - 100;
+            const rotation = Math.random() * 520;
+            
+            const animation = particle.animate([
+                { transform: `translate(0, 0) rotate(0deg)`, opacity: 1 },
+                { transform: `translate(${destX}px, ${destY}px) rotate(${rotation}deg)`, opacity: 0 }
+            ], {
+                duration: 1000 + Math.random() * 1000,
+                easing: 'cubic-bezier(0, .9, .57, 1)',
+                delay: Math.random() * 200
+            });
+            
+            animation.onfinish = () => particle.remove();
+        }
+    </script>
+</body>
+</html>
